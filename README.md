@@ -103,7 +103,7 @@ set(h1, 'Color', [0.8 1 0.9]);
 xlabel('x'); ylabel('z'); 
 title('Campo magnético generado por un solenoide') 
 % (Bxz') se usa para transponer la matriz
-% shading interp: Suaviza los colores entre los puntos de la rejilla.
+% shading interp: Suaviza los colores entre los puntos de la malla.
 % colormap jet: Establece el mapa de colores.
 % colorbar: Añade una barra de color para interpretar los valores.
 % streamslice: Dibuja líneas de campo
