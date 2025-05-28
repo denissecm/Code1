@@ -37,57 +37,42 @@ end
 dz = zeros(1, N*nl); % Componente Z de dl es cero, porque se calculan individual las espiras 
 
 % Visualización de la corriente en las espiras
-figure(1) % Crea la primera figura
+figure(1) 
 quiver3(Px, Py, Pz, dx, dy, dz, 0.5, '-r', 'LineWidth', 
 % '-r' define las flechas en color rojo, 'LineWidth', 2 define el grosor de la línea.
-view(-34, 33) % Establece el ángulo de visión de la figura 3D
-title('Corriente en espiras') % Título del gráfico
-xlabel('x'); ylabel('y'); zlabel('z'); % Etiquetas de los ejes
-axis equal % Asegura que la escala de los ejes sea la misma, manteniendo la proporción
+view(-34, 33) % ángulo de visión de la figura 3D
+title('Corriente en espiras')
+xlabel('x'); ylabel('y'); zlabel('z');
+axis equal % proporcion de ejes 
 
-%% -------------------- PARTE 2: CAMPO MAGNÉTICO --------------------
-% En esta sección se calcula el campo magnético en una región del espacio
-% usando la Ley de Biot-Savart por integración numérica.
-
-% Definición del espacio de cálculo (rejilla de puntos donde se calculará el campo)
-ds = 0.1; % Tamaño de paso para la rejilla (metros)
-x = -5:ds:5; % Rango de coordenadas X
-y = x; % Rango de coordenadas Y (igual que X para una rejilla cúbica)
-z = x; % Rango de coordenadas Z (igual que X para una rejilla cúbica)
+%Calculo del campo magnetico 
+% Malla del campo 
+ds = 0.1; % Tamaño de malla 
+x = -5:ds:5; % Rango X
+y = x; % Rango Y 
+z = x; % Rango Z 
 Lx = length(x); % Número de puntos en el eje X
 Ly = length(y); % Número de puntos en el eje Y
 Lz = length(z); % Número de puntos en el eje Z
 
-% Inicialización de los componentes del campo magnético (B_x, B_y, B_z)
-% Se inicializan con ceros para cada punto de la rejilla.
+% Inicialización de los componentes del campo magnético 
 dBx = zeros(Lx, Ly, Lz);
 dBy = zeros(Lx, Ly, Lz);
 dBz = zeros(Lx, Ly, Lz);
 
-% Cálculo del campo en cada punto del espacio mediante la suma de contribuciones de cada 'dl'
-tic % Inicia un cronómetro para medir el tiempo de cálculo
-for i = 1:Lx % Bucle sobre las coordenadas X de la rejilla
-    for j = 1:Ly % Bucle sobre las coordenadas Y de la rejilla
-        for k = 1:Lz % Bucle sobre las coordenadas Z de la rejilla
-            % Para cada punto (x(i), y(j), z(k)) en el espacio:
-            for l = 1:nl*N % Bucle sobre cada elemento de corriente (dl) de todas las espiras
-                % rx, ry, rz: Componentes del vector 'r' que va desde el elemento de corriente (Px,Py,Pz)
-                % hasta el punto del espacio (x(i),y(j),z(k)) donde se calcula el campo.
+% Cálculo del campo en cada punto del espacio 
+tic % cronometro para el tiempo de calculo 
+for i = 1:Lx % Bucle sobre las coordenadas X
+    for j = 1:Ly % Bucle sobre las coordenadas Y 
+        for k = 1:Lz % Bucle sobre las coordenadas Z 
+
+            for l = 1:nl*N % Bucle sobre cada elemento de corriente de las espiras 
+                % rx, ry, rz: Componentes del vector 'r' 
                 rx = x(i) - Px(l);
                 ry = y(j) - Py(l);
                 rz = z(k) - Pz(l);
-                
-                % r: Magnitud del vector 'r'. Se añade rw^2 para evitar la división por cero
-                % cuando el punto de cálculo coincide con la ubicación del alambre.
-                r = sqrt(rx^2 + ry^2 + rz^2 + rw^2);
-                r3 = r^3; % r al cubo, un término común en la Ley de Biot-Savart
 
-                % Ley de Biot-Savart para cada componente del campo (dBx, dBy, dBz)
-                % dB = (mu_0 * I / 4*pi) * (dl x r) / r^3
-                % Suma las contribuciones de cada elemento de corriente 'dl' al campo total en (x(i),y(j),z(k))
-                % Componente X de (dl x r) es (dly * rz - dlz * ry)
-                % Componente Y de (dl x r) es (dlz * rx - dlx * rz)
-                % Componente Z de (dl x r) es (dlx * ry - dly * rx)
+                
                 
                 dBx(i,j,k) = dBx(i,j,k) + km * (dy(l) * rz - dz(l) * ry) / r3;
                 dBy(i,j,k) = dBy(i,j,k) + km * (dz(l) * rx - dx(l) * rz) / r3;
